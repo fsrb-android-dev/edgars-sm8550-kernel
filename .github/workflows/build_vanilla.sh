@@ -1,4 +1,4 @@
-name: Build
+name: Build Vanilla
 permissions:
   contents: write
 on:
