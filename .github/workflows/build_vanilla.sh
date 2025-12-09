@@ -6,7 +6,7 @@ on:
   push:
 
 jobs: 
-  build_kernel:
+  build_kernel_vanilla:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
