@@ -55,4 +55,8 @@ jobs:
             **Thanks to @edgars-cirulis**
             WILL ONLY WORK ON ONEUI!!!! THIS IS NOT AOSP COMPATIBLE!!!! I AM NOT RESPONSIBLE FOR YOUR DEVICE NOT BOOTING/ BEING BRICKED, ANYTHING ELSE!
             - Vanilla
+            
+            Uncompressed kernel image (for manual flashing):
+            - **DMXQ-KERNEL-Image-Vanilla** - Vanilla kernel image
+            
             - **Run Number:** ${{ github.run_number }}

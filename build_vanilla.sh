@@ -94,6 +94,9 @@ build_kernel(){
     cd ${KERNEL_ROOT}
     git clone https://github.com/voltage-dmxq/AnyKernel3.git
     
+    # Copy the uncompressed Image to the build directory with proper name
+    cp "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/build/DMXQ-KERNEL-Image-Vanilla"
+    
     # Copy the built kernel to the AnyKernel3 directory
     mv "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/AnyKernel3"
     
