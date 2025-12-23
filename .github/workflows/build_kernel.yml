@@ -39,6 +39,16 @@ jobs:
         run: |
           rm -rf out AnyKernel3
           ./build.sh --ksu
+      
+      - name: Get KSU Version
+        id: ksu_version
+        run: |
+          if [ -f build/ksu_version.txt ]; then
+            KSU_VERSION=$(cat build/ksu_version.txt)
+            echo "ksu_version=${KSU_VERSION}" >> $GITHUB_OUTPUT
+          else
+            echo "ksu_version=unknown" >> $GITHUB_OUTPUT
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
@@ -60,7 +70,7 @@ jobs:
             WILL ONLY WORK ON ONEUI!!!! THIS IS NOT AOSP COMPATIBLE!!!! I AM NOT RESPONSIBLE FOR YOUR DEVICE NOT BOOTING/ BEING BRICKED, ANYTHING ELSE!
             
             This release includes two kernel versions:
-            - **DMXQ-KERNEL.ZIP** - KernelSU-Next included ([KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases))
+            - **DMXQ-KERNEL-KSU.ZIP** - KernelSU-Next ${{ steps.ksu_version.outputs.ksu_version }} included ([KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases))
             - **DMXQ-KERNEL-Vanilla.ZIP** - Vanilla build (no KernelSU)
             
             - **Run Number:** ${{ github.run_number }}

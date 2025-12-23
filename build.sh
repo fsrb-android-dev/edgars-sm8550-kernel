@@ -110,6 +110,13 @@ build_kernel(){
     if [ "${BUILD_TYPE}" = "ksu" ]; then
         echo -e "\n[INFO]: Including KernelSU-Next...\n"
         curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+        
+        # Extract and save the KernelSU version
+        if [ -d "${KERNEL_ROOT}/KernelSU-Next" ]; then
+            KSU_VERSION=$(cd "${KERNEL_ROOT}/KernelSU-Next" && git describe --tags --always 2>/dev/null || echo "unknown")
+            echo "${KSU_VERSION}" > "${KERNEL_ROOT}/build/ksu_version.txt"
+            echo -e "[INFO]: KernelSU-Next version: ${KSU_VERSION}\n"
+        fi
     fi
 
     # Make default configuration.
@@ -130,7 +137,7 @@ build_kernel(){
     if [ "${BUILD_TYPE}" = "vanilla" ]; then
         ZIP_NAME="DMXQ-KERNEL-Vanilla.ZIP"
     else
-        ZIP_NAME="DMXQ-KERNEL.ZIP"
+        ZIP_NAME="DMXQ-KERNEL-KSU.ZIP"
     fi
 
     (cd AnyKernel3/ && zip -r ../"${ZIP_NAME}" ./*)
