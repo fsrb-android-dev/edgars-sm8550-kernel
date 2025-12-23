@@ -73,4 +73,8 @@ jobs:
             - **DMXQ-KERNEL-KSU.ZIP** - KernelSU-Next ${{ steps.ksu_version.outputs.ksu_version }} included ([KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases))
             - **DMXQ-KERNEL-Vanilla.ZIP** - Vanilla build (no KernelSU)
             
+            Uncompressed kernel images (for manual flashing):
+            - **DMXQ-KERNEL-Image** - KernelSU-Next kernel image
+            - **DMXQ-KERNEL-Image-Vanilla** - Vanilla kernel image
+            
             - **Run Number:** ${{ github.run_number }}
