@@ -130,15 +130,20 @@ build_kernel(){
     cd ${KERNEL_ROOT}
     git clone https://github.com/voltage-dmxq/AnyKernel3.git
     
-    # Copy the built kernel to the AnyKernel3 directory
-    mv "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/AnyKernel3"
-    
-    # Set the zip name based on build type
+    # Set the names based on build type
     if [ "${BUILD_TYPE}" = "vanilla" ]; then
         ZIP_NAME="DMXQ-KERNEL-Vanilla.ZIP"
+        IMAGE_NAME="DMXQ-KERNEL-Image-Vanilla"
     else
         ZIP_NAME="DMXQ-KERNEL-KSU.ZIP"
+        IMAGE_NAME="DMXQ-KERNEL-Image"
     fi
+
+    # Copy the uncompressed Image to the build directory with proper name
+    cp "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/build/${IMAGE_NAME}"
+    
+    # Copy the built kernel to the AnyKernel3 directory
+    mv "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/AnyKernel3"
 
     (cd AnyKernel3/ && zip -r ../"${ZIP_NAME}" ./*)
     mv "${ZIP_NAME}" build/
