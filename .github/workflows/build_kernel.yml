@@ -3,15 +3,6 @@ permissions:
   contents: write
 on:
   workflow_dispatch:
-    inputs:
-      build_type:
-        description: 'Build type'
-        required: true
-        default: 'vanilla'
-        type: choice
-        options:
-          - vanilla
-          - ksu
   push:
 
 jobs: 
@@ -41,9 +32,13 @@ jobs:
           free -h
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Build Kernel
+      - name: Build Vanilla Kernel
         run: |
-          ./build.sh --${{ github.event.inputs.build_type || 'vanilla' }}
+          ./build.sh --vanilla
+      - name: Clean and Build KSU Kernel
+        run: |
+          rm -rf out AnyKernel3
+          ./build.sh --ksu
 
       - uses: actions/upload-artifact@v4
         with:
@@ -56,7 +51,7 @@ jobs:
         uses: softprops/action-gh-release@v2.4.2
         with:
           files: build/*
-          name: KERNEL_${{ github.run_number }}${{ github.event.inputs.build_type == 'vanilla' && '-Vanilla' || '' }}
+          name: KERNEL_${{ github.run_number }}
           tag_name: ${{ github.run_number }}
           
           body: |
@@ -64,5 +59,8 @@ jobs:
             **Thanks to @edgars-cirulis**
             WILL ONLY WORK ON ONEUI!!!! THIS IS NOT AOSP COMPATIBLE!!!! I AM NOT RESPONSIBLE FOR YOUR DEVICE NOT BOOTING/ BEING BRICKED, ANYTHING ELSE!
             
-            ${{ github.event.inputs.build_type == 'ksu' && '- **KernelSU-Next included [KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases)**' || '- **Vanilla build (no KernelSU)**' }}
+            This release includes two kernel versions:
+            - **DMXQ-KERNEL.ZIP** - KernelSU-Next included ([KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases))
+            - **DMXQ-KERNEL-Vanilla.ZIP** - Vanilla build (no KernelSU)
+            
             - **Run Number:** ${{ github.run_number }}
