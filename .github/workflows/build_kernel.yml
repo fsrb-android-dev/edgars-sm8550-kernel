@@ -3,6 +3,15 @@ permissions:
   contents: write
 on:
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type'
+        required: true
+        default: 'vanilla'
+        type: choice
+        options:
+          - vanilla
+          - ksu
   push:
 
 jobs: 
@@ -34,7 +43,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Build Kernel
         run: |
-          source ./build.sh
+          ./build.sh --${{ github.event.inputs.build_type || 'vanilla' }}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -47,13 +56,13 @@ jobs:
         uses: softprops/action-gh-release@v2.4.2
         with:
           files: build/*
-          name: KERNEL_${{ github.run_number }}
+          name: KERNEL_${{ github.run_number }}${{ github.event.inputs.build_type == 'vanilla' && '-Vanilla' || '' }}
           tag_name: ${{ github.run_number }}
           
           body: |
-            **DMXQ-KERNELSU-KERNEL**:
+            **DMXQ-KERNEL**:
             **Thanks to @edgars-cirulis**
             WILL ONLY WORK ON ONEUI!!!! THIS IS NOT AOSP COMPATIBLE!!!! I AM NOT RESPONSIBLE FOR YOUR DEVICE NOT BOOTING/ BEING BRICKED, ANYTHING ELSE!
             
-            - **KernelSU-Next included [KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases)**
+            ${{ github.event.inputs.build_type == 'ksu' && '- **KernelSU-Next included [KernelSU Next apk](https://github.com/KernelSU-Next/KernelSU-Next/releases)**' || '- **Vanilla build (no KernelSU)**' }}
             - **Run Number:** ${{ github.run_number }}

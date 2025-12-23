@@ -1,6 +1,29 @@
 #!/bin/bash
 
+# Parse command line arguments
+# Default is vanilla build
+BUILD_TYPE="vanilla"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --vanilla)
+            BUILD_TYPE="vanilla"
+            shift
+            ;;
+        --ksu)
+            BUILD_TYPE="ksu"
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--vanilla|--ksu]"
+            exit 1
+            ;;
+    esac
+done
+
 echo -e "\n[INFO]: BUILD STARTED..!\n"
+echo -e "[INFO]: Build type: ${BUILD_TYPE}\n"
 rm -rf AnyKernel3/
 #init submodules
 git submodule init && git submodule update
@@ -83,7 +106,12 @@ export BUILD_OPTIONS=(
 )
 
 build_kernel(){
-    curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+    # Only include KernelSU-Next if building with KSU
+    if [ "${BUILD_TYPE}" = "ksu" ]; then
+        echo -e "\n[INFO]: Including KernelSU-Next...\n"
+        curl -LSs "https://raw.githubusercontent.com/KernelSU-Next/KernelSU-Next/next/kernel/setup.sh" | bash -
+    fi
+
     # Make default configuration.
     make "${BUILD_OPTIONS[@]}" gki_defconfig
 
@@ -98,7 +126,14 @@ build_kernel(){
     # Copy the built kernel to the AnyKernel3 directory
     mv "${KERNEL_ROOT}/out/arch/arm64/boot/Image" "${KERNEL_ROOT}/AnyKernel3"
     
-    (cd AnyKernel3/ && zip -r ../DMXQ-KERNEL.ZIP ./*)
-    mv DMXQ-KERNEL.ZIP build/
+    # Set the zip name based on build type
+    if [ "${BUILD_TYPE}" = "vanilla" ]; then
+        ZIP_NAME="DMXQ-KERNEL-Vanilla.ZIP"
+    else
+        ZIP_NAME="DMXQ-KERNEL.ZIP"
+    fi
+
+    (cd AnyKernel3/ && zip -r ../"${ZIP_NAME}" ./*)
+    mv "${ZIP_NAME}" build/
 }
 build_kernel
